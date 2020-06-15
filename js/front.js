@@ -47,17 +47,17 @@ Cookies.set('active', 'true');
 
 
 function referProd() {
-    location.href = "/productos.html";
+    location.href = location.pathname.substr(0, 18) + "/productos.html";
 }
 
 function referCat() {
-    location.href = "/categorias.html";
+    location.href = location.pathname.substr(0, 18) + "/categorias.html";
 }
 
 function referOrd() {
-    location.href = "/ordenes.html";
+    location.href = location.pathname.substr(0, 18) + "/ordenes.html";
 }
 
 function referMar() {
-    location.href = "/marca.html";
+    location.href = location.pathname.substr(0, 18) + "/marca.html";
 }
