@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TPI - Sistema de cobros</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+        integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <!-- Google fonts - Popppins for copy-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,800">
+    <!-- orion icons-->
+    <link rel="stylesheet" href="css/orionicons.css">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="img/fav.png">
+</head>
+
+<body>
+    <!-- navbar-->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a href="#"
+                class="sidebar-toggler text-gray-500 mr-4 mr-lg-5 lead"><i class="fas fa-align-left"></i></a><a
+                href="index.html" class="navbar-brand font-weight-bold text-uppercase text-base">TPI</a>
+        </nav>
+    </header>
+    <div class="d-flex align-items-stretch" style="height: 100vh;">
+
+        <!-- Side navbar -->
+        <div id="sidebar" class="sidebar py-3">
+            <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">MENÚ
+            </div>
+            <ul class="sidebar-menu list-unstyled">
+                <li class="sidebar-list-item">
+                    <a href="index.html" class="sidebar-link text-muted">
+                        <i class="o-home-1 mr-3 text-gray"></i><span>Home</span>
+                    </a>
+                </li>
+                <li class="sidebar-list-item">
+                    <a href="categorias.html" class="sidebar-link text-muted">
+                        <i class="o-wireframe-1 mr-3 text-gray"></i><span>Categorias</span>
+                    </a>
+                </li>
+                <li class="sidebar-list-item">
+                    <a href="productos.html" class="sidebar-link text-muted">
+                        <i class="o-table-content-1 mr-3 text-gray"></i><span>Productos</span>
+                    </a>
+                </li>
+                <li class="sidebar-list-item">
+                    <a href="#" class="sidebar-link text-muted active">
+                        <i class="o-survey-1 mr-3 text-gray"></i><span>Ordenes</span>
+                    </a>
+                </li>
+                <li class="sidebar-list-item">
+                    <a href="marca.html" class="sidebar-link text-muted">
+                        <i class="fas fa-list-ul mr-3 text-gray"></i><span>Marca</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- Fin del Side navbar -->
+
+        <!-- Cuerpo a escribir y comienza dominio de vue -->
+        <div class="page-holder w-100 d-flex flex-wrap">
+            <div class="container-fluid px-xl-5">
+
+                <div style="margin-top: 2rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="text-uppercase mb-0" style="display: inline-block;">Ordenes</h6>
+                            <button type="button" class="btn btn-success" style="float: right;" data-toggle="modal"
+                                data-target="#agregarProducto"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group position-relative mb-0">
+                                <button type="submit" style="top: -3px; left: 0;"
+                                    class="position-absolute bg-white border-0 p-0"><i
+                                        class="o-search-magnify-1 text-gray text-lg"></i></button>
+                                <input type="search" placeholder="Buscar orden..."
+                                    class="form-control form-control-sm border-0 no-shadow pl-4">
+                            </div>
+                            <table class="table card-text table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nombre</th>
+                                        <th>Fecha</th>
+                                        <th>Total</th>
+                                        <th>Descripción</th>
+                                        <th>Operaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>1</th>
+                                        <td>Jaime</td>
+                                        <td>12/06/2020</td>
+                                        <td>$45.60</td>
+                                        <td>NA</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                                data-target="#eliminarProducto"><i class="fa fa-trash"
+                                                    aria-hidden="true"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>2</th>
+                                        <td>Espadero</td>
+                                        <td>26/05/2020</td>
+                                        <td>$251.56</td>
+                                        <td>NA</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                                data-target="#eliminarProducto"><i class="fa fa-trash"
+                                                    aria-hidden="true"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>3</th>
+                                        <td>Cristian</td>
+                                        <td>23/06/2020</td>
+                                        <td>$437.12</td>
+                                        <td>NA</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                                data-target="#eliminarProducto"><i class="fa fa-trash"
+                                                    aria-hidden="true"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Fin del Cuerpo a escribir -->
+
+
+            <!-- Inicio del Modal agregar orden -->
+            <div class="modal fade bd-example-modal-lg" id="agregarProducto" tabindex="-1" role="dialog"
+                aria-labelledby="agregarProducto" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Nueva Orden</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label">Nombre</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="line"></div>
+                                <div style="overflow-x: scroll;">
+                                    <div class="form-group position-relative mb-0">
+                                        <button type="submit" style="top: -3px; left: 0;"
+                                            class="position-absolute bg-white border-0 p-0"><i
+                                                class="o-search-magnify-1 text-gray text-lg"></i></button>
+                                        <input type="search" placeholder="Buscar producto..."
+                                            class="form-control form-control-sm border-0 no-shadow pl-4">
+                                    </div>
+                                    <table class="table card-text table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>UPC</th>
+                                                <th>Nombre</th>
+                                                <th>Marca</th>
+                                                <th>Categoria</th>
+                                                <th>Precio</th>
+
+                                                <th>Stock</th>
+                                                <th>Cantidad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>3478260116332</th>
+                                                <td>Pasta dental</td>
+                                                <td>Colgate</td>
+                                                <td>Hogar</td>
+                                                <td>$1.00</td>
+
+                                                <td>6123</td>
+                                                <td style="padding: 0;">
+                                                    <div class="input-group" style="transform: scale(0.9);">
+                                                        <div class="input-group-prepend"><span
+                                                                class="input-group-text">-</span></div>
+                                                        <input type="text" style="padding: 0" class="form-control">
+                                                        <div class="input-group-append"><span
+                                                                class="input-group-text">+</span></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>8375502253172</th>
+                                                <td>Engrapadora</td>
+                                                <td>StudMark</td>
+                                                <td>Hogar</td>
+                                                <td>$3.00</td>
+
+                                                <td>238</td>
+                                                <td style="padding: 0;">
+                                                    <div class="input-group" style="transform: scale(0.9);">
+                                                        <div class="input-group-prepend"><span
+                                                                class="input-group-text">-</span></div>
+                                                        <input type="text" style="padding: 0" class="form-control">
+                                                        <div class="input-group-append"><span
+                                                                class="input-group-text">+</span></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>9248576100438</th>
+                                                <td>Lentes</td>
+                                                <td>Ray Ban</td>
+                                                <td>Belleza</td>
+                                                <td>$32.00</td>
+
+                                                <td>421</td>
+                                                <td style="padding: 0;">
+                                                    <div class="input-group" style="transform: scale(0.9);">
+                                                        <div class="input-group-prepend"><span
+                                                                class="input-group-text">-</span></div>
+                                                        <input type="text" style="padding: 0" class="form-control">
+                                                        <div class="input-group-append"><span
+                                                                class="input-group-text">+</span></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="line"></div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label">Descripción</label>
+                                    <div class="col-md-9">
+                                        <textarea class="form-control" id="exampleFormControlTextarea1"
+                                            rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="line"></div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label">Descuento (%)</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin del Modal agregar producto -->
+
+            <!-- Inicio del Modal eliminar orden -->
+            <div class="modal fade" id="eliminarProducto" tabindex="-1" role="dialog" aria-labelledby="agregarProducto"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Eliminar Orden</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar la orden
+                                "$vue.object"?</h6>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin del Modal eliminar producto -->
+
+            <footer class="footer-margin footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
+                <div class="container-fluid">
+                    <div class="row text-primary" style="justify-content: center;">
+                        <p class="mb-2 mb-md-0">Técnicas de Programación en Internet</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- Fin del dominio de vue -->
+
+    </div>
+    <!-- JavaScript files-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script src="js/front.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>TPI - Sistema de cobros</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <!-- Bootstrap CSS-->
+  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome CSS-->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <!-- Google fonts - Popppins for copy-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,800">
+  <!-- orion icons-->
+  <link rel="stylesheet" href="css/orionicons.css">
+  <!-- theme stylesheet-->
+  <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+  <!-- Custom stylesheet - for your changes-->
+  <link rel="stylesheet" href="css/custom.css">
+  <!-- Favicon-->
+  <link rel="shortcut icon" href="img/fav.png">
+</head>
+
+<body>
+  <!-- navbar-->
+  <header class="header">
+    <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a href="#"
+        class="sidebar-toggler text-gray-500 mr-4 mr-lg-5 lead"><i class="fas fa-align-left"></i></a><a
+        href="index.html" class="navbar-brand font-weight-bold text-uppercase text-base">TPI</a>
+    </nav>
+  </header>
+  <div class="d-flex align-items-stretch">
+
+    <!-- Side navbar -->
+    <div id="sidebar" class="sidebar py-3">
+      <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">MENÚ</div>
+      <ul class="sidebar-menu list-unstyled">
+        <li class="sidebar-list-item">
+          <a href="index.html" class="sidebar-link text-muted active">
+            <i class="o-home-1 mr-3 text-gray"></i><span>Home</span>
+          </a>
+        </li>
+        <li class="sidebar-list-item">
+          <a href="categorias.html" class="sidebar-link text-muted">
+            <i class="o-wireframe-1 mr-3 text-gray"></i><span>Categorias</span>
+          </a>
+        </li>
+        <li class="sidebar-list-item">
+          <a href="productos.html" class="sidebar-link text-muted">
+            <i class="o-table-content-1 mr-3 text-gray"></i><span>Productos</span>
+          </a>
+        </li>
+        <li class="sidebar-list-item">
+          <a href="ordenes.html" class="sidebar-link text-muted">
+            <i class="o-survey-1 mr-3 text-gray"></i><span>Ordenes</span>
+          </a>
+        </li>
+        <li class="sidebar-list-item">
+          <a href="marca.html" class="sidebar-link text-muted">
+            <i class="fas fa-list-ul mr-3 text-gray"></i><span>Marca</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- Fin del Side navbar -->
+
+    <!-- Cuerpo a escribir y comienza dominio de vue -->
+    <div class="page-holder w-100 d-flex flex-wrap">
+      <div class="container-fluid px-xl-5">
+        <div style="box-shadow: 0 0.125rem 0.8rem rgba(0, 0, 0, 0.1);margin-top: 1rem;border-radius: 25px;overflow: hidden;">
+          <img src="img/TPI1.png" alt="..." style="max-width: 100%;">
+        </div>
+        <h1 style="text-align: center;margin-top: 2rem;margin-bottom: 0;">Esto es lo que puedes hacer:</h1>
+        <div class="cuadros-home">
+          <div class="cuadro1-home" onclick="referProd()">
+            <img src="img/1.png" alt="..." style="max-width: 100%;">
+            <div class="font-weight-bold d-block" style="margin: 1rem;font-size: 2.5rem;">Productos</div>
+            <div class="cuadros-text-home">Editar, eliminar, agregar o listar</div>
+          </div>
+          <div class="cuadro2-home" onclick="referMar()">
+            <img src="img/2.png" alt="..." style="max-width: 100%;">
+            <div class="font-weight-bold d-block" style="margin: 1rem;font-size: 2.5rem;">Marcas</div>
+            <div class="cuadros-text-home">Editar, eliminar, agregar o listar</div>
+          </div>
+        </div>
+        <div class="cuadros-home">
+          <div class="cuadro3-home" onclick="referCat()">
+            <img src="img/3.png" alt="..." style="max-width: 100%;">
+            <div class="font-weight-bold d-block" style="margin: 1rem;font-size: 2.5rem;">Categorias</div>
+            <div class="cuadros-text-home">Editar, eliminar, agregar o listar</div>
+          </div>
+          <div class="cuadro4-home" onclick="referOrd()">
+            <img src="img/4.png" alt="..." style="max-width: 100%;">
+            <div class="font-weight-bold d-block" style="margin: 1rem;font-size: 2.5rem;">Ordenes</div>
+            <div class="cuadros-text-home">Eliminar, agregar o listar</div>
+          </div>
+        </div>
+      </div>
+      <!-- Fin del Cuerpo a escribir -->
+
+      <footer class="footer-margin footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
+        <div class="container-fluid">
+          <div class="row text-primary" style="justify-content: center;">
+            <p class="mb-2 mb-md-0">Técnicas de Programación en Internet</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <!-- Fin del dominio de vue -->
+
+  </div>
+  <!-- JavaScript files-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/popper.js/umd/popper.min.js"> </script>
+  <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+  <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script src="js/front.js"></script>
+</body>
+
+</html>
