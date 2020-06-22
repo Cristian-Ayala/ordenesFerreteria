@@ -61,3 +61,5 @@ function referOrd() {
 function referMar() {
     location.href = location.pathname.substr(0, 18) + "/marca.html";
 }
+
+var ApiRestUrl = "http://localhost:8080/sistema-cobro/rest-resources/"

@@ -70,7 +70,7 @@
         <!-- Fin del Side navbar -->
 
         <!-- Cuerpo a escribir y comienza dominio de vue -->
-        <div class="page-holder w-100 d-flex flex-wrap">
+        <div id="domVue" class="page-holder w-100 d-flex flex-wrap">
             <div class="container-fluid px-xl-5">
 
                 <div style="margin-top: 2rem;">
@@ -85,7 +85,7 @@
                                 <button type="submit" style="top: -3px; left: 0;"
                                     class="position-absolute bg-white border-0 p-0"><i
                                         class="o-search-magnify-1 text-gray text-lg"></i></button>
-                                <input type="search" placeholder="Buscar producto..."
+                                <input type="search" v-model="searchDisplay" placeholder="Buscar producto..."
                                     class="form-control form-control-sm border-0 no-shadow pl-4">
                             </div>
                             <table class="table card-text table-hover">
@@ -102,50 +102,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th>3478260116332</th>
-                                        <td>Pasta dental</td>
-                                        <td>Colgate</td>
-                                        <td>Hogar</td>
-                                        <td>$1.00</td>
-                                        <td>Pasta para cepillar los dientes</td>
-                                        <td>6123</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                data-target="#eliminarProducto"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning" data-toggle="modal"
-                                                data-target="#editarProducto"><i class="fa fa-edit"
-                                                    aria-hidden="true"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>8375502253172</th>
-                                        <td>Engrapadora</td>
-                                        <td>StudMark</td>
-                                        <td>Hogar</td>
-                                        <td>$3.00</td>
-                                        <td>Engrapadora para engrapar trabajos</td>
-                                        <td>238</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                data-target="#eliminarProducto"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning" data-toggle="modal"
-                                                data-target="#editarProducto"><i class="fa fa-edit"
-                                                    aria-hidden="true"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>9248576100438</th>
-                                        <td>Lentes</td>
-                                        <td>Ray Ban</td>
-                                        <td>Belleza</td>
-                                        <td>$32.00</td>
-                                        <td>Lentes de sol personalizados</td>
-                                        <td>421</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    <tr v-for="(prod,index) in productos" v-show="filtro(index)">
+                                        <th>{{prod.upc}}</th>
+                                        <td>{{prod.nombreProd}}</td>
+                                        <td>{{marcas.filter(mar => mar.idMarca === prod.idMarca)[0].nombreMarca}}</td>
+                                        <td>{{categorias.filter(cat => cat.idCategoria === prod.idCategoria)[0].nombreCat}}</td>
+                                        <td>${{prod.precioUnit}}</td>
+                                        <td>{{prod.descripcion}}</td>
+                                        <td>{{prod.stockProd}}</td>
+                                        <td> <button type="button" class="btn btn-danger" data-toggle="modal"
                                                 data-target="#eliminarProducto"><i class="fa fa-trash"
                                                     aria-hidden="true"></i></button>
                                             <button type="button" class="btn btn-warning" data-toggle="modal"
@@ -179,28 +144,23 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">UPC</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="producto.upc">
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="producto.nombreProd">
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Marca</label>
                                     <div class="col-md-9">
-                                        <!-- style="width: 100%;border-radius: 50px;border: 1px solid darkgrey;height: 2.3rem;" -->
                                         <input list="marcas" name="marca" id="marca" class="form-control">
                                         <datalist id="marcas">
-                                            <option value="Kellog's">
-                                            <option value="Colgate">
-                                            <option value="StudMark">
-                                            <option value="Stadler">
-                                            <option value="Casio">
+                                            <option v-for="(mar,index) in marcas">{{mar.nombreMarca}}</option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -208,13 +168,9 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Categoria</label>
                                     <div class="col-md-9">
-                                        <input list="categoria" name="cat" id="cat" class="form-control">
+                                        <input list="categoria" name="cat" id="cat" class="form-control" v-model="categoriaSelected">
                                         <datalist id="categoria">
-                                            <option value="Hogar">
-                                            <option value="Ferreteria">
-                                            <option value="Iluminación">
-                                            <option value="Pinturas">
-                                            <option value="Comida">
+                                            <option v-for="(cat,index) in categorias">{{cat.nombreCat}}</option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -228,7 +184,7 @@
                                                 </div>
                                                 <input type="text"
                                                     aria-label="Dollar amount (with dot and two decimal places)"
-                                                    class="form-control">
+                                                    class="form-control" v-model="producto.precioUnit">
                                             </div>
                                         </div>
                                     </div>
@@ -238,14 +194,14 @@
                                     <label class="col-md-3 form-control-label">Descripción</label>
                                     <div class="col-md-9">
                                         <textarea class="form-control" id="exampleFormControlTextarea1"
-                                            rows="3"></textarea>
+                                            rows="3" v-model="producto.descripcion"></textarea>
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Stock</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="producto.stockProd">
                                     </div>
                                 </div>
                             </div>
@@ -367,7 +323,8 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar el producto
+                            <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar el
+                                producto
                                 "$vue.object"?</h6>
                         </div>
                         <div class="modal-footer">
@@ -397,6 +354,9 @@
     <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="js/front.js"></script>
+    <script src="js/vue.js "></script>
+    <script src="js/axios.min.js "></script>
+    <script src="js/producto.js"></script>
 </body>
 
 </html>

@@ -70,7 +70,7 @@
         <!-- Fin del Side navbar -->
 
         <!-- Cuerpo a escribir y comienza dominio de vue -->
-        <div class="page-holder w-100 d-flex flex-wrap">
+        <div id="domVue" class="page-holder w-100 d-flex flex-wrap">
             <div class="container-fluid px-xl-5">
 
                 <div style="margin-top: 2rem;">
@@ -78,9 +78,17 @@
                         <div class="card-header">
                             <h6 class="text-uppercase mb-0" style="display: inline-block;">Categorias</h6>
                             <button type="button" class="btn btn-success" style="float: right;" data-toggle="modal"
-                                data-target="#agregarCategoria"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                data-target="#agregarCategoria" v-on:click="clearData()"><i class="fa fa-plus"
+                                    aria-hidden="true"></i></button>
                         </div>
                         <div class="card-body">
+                            <div class="form-group position-relative mb-0">
+                                <button type="submit" style="top: -3px; left: 0;"
+                                    class="position-absolute bg-white border-0 p-0"><i
+                                        class="o-search-magnify-1 text-gray text-lg"></i></button>
+                                <input type="search" v-model="searchDisplay" placeholder="Buscar producto..."
+                                    class="form-control form-control-sm border-0 no-shadow pl-4">
+                            </div>
                             <table class="table card-text table-hover">
                                 <thead>
                                     <tr>
@@ -91,38 +99,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Hogar</td>
-                                        <td>Todos los artículos relacionados al hogar.</td>
+                                    <tr v-for="(cat,index) in categorias" v-show="filtro(index)">
+                                        <th scope="row">{{index+1}}</th>
+                                        <td>{{cat.nombreCat}}</td>
+                                        <td>{{cat.descripcion}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                            <button type="button" @click="getCategoriaSelected(cat)"
+                                                class="btn btn-danger" data-toggle="modal"
                                                 data-target="#eliminarCategoria"><i class="fa fa-trash"
                                                     aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning" data-toggle="modal"
+                                            <button type="button" @click="getCategoriaSelected(cat)"
+                                                class="btn btn-warning" data-toggle="modal"
                                                 data-target="#editarCategoria"><i class="fa fa-edit"
-                                                    aria-hidden="true"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Pintura</td>
-                                        <td>Tipos de pintura y colores en distintos tamaños.</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning"><i class="fa fa-edit"
-                                                    aria-hidden="true"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Iluminación</td>
-                                        <td>Tipos de focos y diferentes tamaños.</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning"><i class="fa fa-edit"
                                                     aria-hidden="true"></i></button>
                                         </td>
                                     </tr>
@@ -152,22 +140,23 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="categoria.nombreCat">
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Descripción</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1"
-                                            rows="3"></textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            v-model="categoria.descripcion"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-primary" v-on:click="createRegistro"
+                                data-dismiss="modal">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -190,22 +179,23 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="categoria.nombreCat">
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Descripción</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1"
-                                            rows="3"></textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            v-model="categoria.descripcion"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Guardar cambios</button>
+                            <button type="button" class="btn btn-primary" v-on:click="edithRegistro()"
+                                data-dismiss="modal">Guardar cambios</button>
                         </div>
                     </div>
                 </div>
@@ -224,11 +214,13 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar la categoria "$vue.object"?</h6>
+                            <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar la
+                                categoria "{{categoria.nombreCat}}"?</h6>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger">Eliminar</button>
+                            <button type="button" class="btn btn-danger" v-on:click="removeRegistro()"
+                                data-dismiss="modal">Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -253,6 +245,9 @@
     <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="js/front.js"></script>
+    <script src="js/vue.js "></script>
+    <script src="js/axios.min.js "></script>
+    <script src="js/categoria.js"></script>
 </body>
 
 </html>

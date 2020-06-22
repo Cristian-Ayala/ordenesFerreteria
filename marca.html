@@ -70,7 +70,7 @@
         <!-- Fin del Side navbar -->
 
         <!-- Cuerpo a escribir y comienza dominio de vue -->
-        <div class="page-holder w-100 d-flex flex-wrap">
+        <div id="domVue" class="page-holder w-100 d-flex flex-wrap">
             <div class="container-fluid px-xl-5">
 
                 <div style="margin-top: 2rem;">
@@ -78,14 +78,15 @@
                         <div class="card-header">
                             <h6 class="text-uppercase mb-0" style="display: inline-block;">Marcas</h6>
                             <button type="button" class="btn btn-success" style="float: right;" data-toggle="modal"
-                                data-target="#agregarMarca"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                data-target="#agregarMarca" v-on:click="clearData()"><i class="fa fa-plus"
+                                    aria-hidden="true"></i></button>
                         </div>
                         <div class="card-body">
                             <div class="form-group position-relative mb-0">
                                 <button type="submit" style="top: -3px; left: 0;"
                                     class="position-absolute bg-white border-0 p-0"><i
                                         class="o-search-magnify-1 text-gray text-lg"></i></button>
-                                <input type="search" placeholder="Buscar marca..."
+                                <input type="search" v-model="searchDisplay" placeholder="Buscar marca..."
                                     class="form-control form-control-sm border-0 no-shadow pl-4">
                             </div>
                             <table class="table card-text table-hover">
@@ -98,38 +99,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Kellogg's</td>
-                                        <td>Posee Froot Loops, Frosted Flakes, Eggo, Pringles y Cheez-It.</td>
+                                    <tr v-for="(mar,index) in marcas" v-show="filtro(index)">
+                                        <th scope="row">{{index+1}}</th>
+                                        <td>{{mar.nombreMarca}}</td>
+                                        <td>{{mar.descripMarca}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                data-target="#eliminarMarca"><i class="fa fa-trash"
+                                            <button type="button" @click="getMarcaSelected(mar)" class="btn btn-danger"
+                                                data-toggle="modal" data-target="#eliminarMarca"><i class="fa fa-trash"
                                                     aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning" data-toggle="modal"
-                                                data-target="#editarMarca"><i class="fa fa-edit"
-                                                    aria-hidden="true"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Black and Decker.</td>
-                                        <td>Produce herramientas hasta utencilios de la casa</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning"><i class="fa fa-edit"
-                                                    aria-hidden="true"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Sherwin-williams</td>
-                                        <td>Pinturas para todos</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning"><i class="fa fa-edit"
+                                            <button type="button" @click="getMarcaSelected(mar)" class="btn btn-warning"
+                                                data-toggle="modal" data-target="#editarMarca"><i class="fa fa-edit"
                                                     aria-hidden="true"></i></button>
                                         </td>
                                     </tr>
@@ -159,22 +138,23 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="marca.nombreMarca">
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Descripción</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1"
-                                            rows="3"></textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            v-model="marca.descripMarca"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-primary" v-on:click="createRegistro()"
+                                data-dismiss="modal">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -197,22 +177,23 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="marca.nombreMarca">
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Descripción</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1"
-                                            rows="3"></textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            v-model="marca.descripMarca"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Guardar cambios</button>
+                            <button type="button" class="btn btn-primary" v-on:click="edithRegistro()"
+                                data-dismiss="modal">Guardar cambios</button>
                         </div>
                     </div>
                 </div>
@@ -231,12 +212,11 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar la marca
-                                "$vue.object"?</h6>
+                            <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar la marca "{{marca.nombreMarca}}"?</h6>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger">Eliminar</button>
+                            <button type="button" class="btn btn-danger" v-on:click="removeRegistro()" data-dismiss="modal">Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -261,6 +241,9 @@
     <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="js/front.js"></script>
+    <script src="js/vue.js "></script>
+    <script src="js/axios.min.js "></script>
+    <script src="js/marca.js"></script>
 </body>
 
 </html>
