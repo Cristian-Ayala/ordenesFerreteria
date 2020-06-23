@@ -77,8 +77,9 @@
                     <div class="card">
                         <div class="card-header">
                             <h6 class="text-uppercase mb-0" style="display: inline-block;">Productos</h6>
-                            <button type="button" class="btn btn-success" style="float: right;" data-toggle="modal"
-                                data-target="#agregarProducto"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                            <button type="button" @click="clearData()" class="btn btn-success" style="float: right;"
+                                data-toggle="modal" data-target="#agregarProducto"><i class="fa fa-plus"
+                                    aria-hidden="true"></i></button>
                         </div>
                         <div class="card-body">
                             <div class="form-group position-relative mb-0">
@@ -105,15 +106,18 @@
                                     <tr v-for="(prod,index) in productos" v-show="filtro(index)">
                                         <th>{{prod.upc}}</th>
                                         <td>{{prod.nombreProd}}</td>
-                                        <td>{{marcas.filter(mar => mar.idMarca === prod.idMarca)[0].nombreMarca}}</td>
-                                        <td>{{categorias.filter(cat => cat.idCategoria === prod.idCategoria)[0].nombreCat}}</td>
+                                        <td>{{prod.nombreMarca}}</td>
+                                        <td>{{prod.nombreCategoria}}
+                                        </td>
                                         <td>${{prod.precioUnit}}</td>
                                         <td>{{prod.descripcion}}</td>
                                         <td>{{prod.stockProd}}</td>
-                                        <td> <button type="button" class="btn btn-danger" data-toggle="modal"
+                                        <td> <button type="button" @click="getProductoSelected(prod)"
+                                                class="btn btn-danger" data-toggle="modal"
                                                 data-target="#eliminarProducto"><i class="fa fa-trash"
                                                     aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-warning" data-toggle="modal"
+                                            <button type="button" @click="getProductoSelected(prod)"
+                                                class="btn btn-warning" data-toggle="modal"
                                                 data-target="#editarProducto"><i class="fa fa-edit"
                                                     aria-hidden="true"></i></button>
                                         </td>
@@ -158,9 +162,11 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Marca</label>
                                     <div class="col-md-9">
-                                        <input list="marcas" name="marca" id="marca" class="form-control">
+                                        <input list="marcas" name="marca" id="marca" class="form-control"
+                                            v-model="producto.nombreMarca">
                                         <datalist id="marcas">
-                                            <option v-for="(mar,index) in marcas">{{mar.nombreMarca}}</option>
+                                            <option v-for="(mar,index) in marcas" :data-value="mar.idMarca">
+                                                {{mar.nombreMarca}}</option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -168,7 +174,8 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Categoria</label>
                                     <div class="col-md-9">
-                                        <input list="categoria" name="cat" id="cat" class="form-control" v-model="categoriaSelected">
+                                        <input list="categoria" name="cat" id="cat" class="form-control"
+                                            v-model="producto.nombreCategoria">
                                         <datalist id="categoria">
                                             <option v-for="(cat,index) in categorias">{{cat.nombreCat}}</option>
                                         </datalist>
@@ -193,8 +200,8 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Descripción</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1"
-                                            rows="3" v-model="producto.descripcion"></textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            v-model="producto.descripcion"></textarea>
                                     </div>
                                 </div>
                                 <div class="line"></div>
@@ -208,7 +215,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-primary" v-on:click="createRegistro()"
+                                data-dismiss="modal">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -231,28 +239,24 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">UPC</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="producto.upc">
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="producto.nombreProd">
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Marca</label>
                                     <div class="col-md-9">
-                                        <!-- style="width: 100%;border-radius: 50px;border: 1px solid darkgrey;height: 2.3rem;" -->
-                                        <input list="marcasEdit" name="marcas" id="marcas" class="form-control">
+                                        <input list="marcasEdit" name="marcas" id="marcas" class="form-control"
+                                            v-model="producto.nombreMarca">
                                         <datalist id="marcasEdit">
-                                            <option value="Kellog's">
-                                            <option value="Colgate">
-                                            <option value="StudMark">
-                                            <option value="Stadler">
-                                            <option value="Casio">
+                                            <option v-for="(mar,index) in marcas">{{mar.nombreMarca}}</option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -260,7 +264,8 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Categoria</label>
                                     <div class="col-md-9">
-                                        <input list="categoriaEdit" name="cate" id="cate" class="form-control">
+                                        <input list="categoriaEdit" name="cate" id="cate" class="form-control"
+                                            v-model="producto.nombreCategoria">
                                         <datalist id="categoriaEdit">
                                             <option value="Hogar">
                                             <option value="Ferreteria">
@@ -280,7 +285,7 @@
                                                 </div>
                                                 <input type="text"
                                                     aria-label="Dollar amount (with dot and two decimal places)"
-                                                    class="form-control">
+                                                    class="form-control" v-model="producto.precioUnit">
                                             </div>
                                         </div>
                                     </div>
@@ -289,22 +294,22 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Descripción</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1"
-                                            rows="3"></textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            v-model="producto.descripcion"></textarea>
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Stock</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="producto.stockProd">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Guardar cambios</button>
+                            <button type="button" class="btn btn-primary" @click="edithRegistro()" data-dismiss="modal">Guardar cambios</button>
                         </div>
                     </div>
                 </div>
@@ -325,11 +330,11 @@
                         <div class="modal-body">
                             <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar el
                                 producto
-                                "$vue.object"?</h6>
+                                "{{producto.nombreProd}}"?</h6>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger">Eliminar</button>
+                            <button type="button" class="btn btn-danger" @Click="removeRegistro()" data-dismiss="modal">Eliminar</button>
                         </div>
                     </div>
                 </div>
