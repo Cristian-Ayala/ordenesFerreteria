@@ -63,3 +63,6 @@ function referMar() {
 }
 
 var ApiRestUrl = "http://localhost:8080/sistema-cobro/rest-resources/"
+window.onload = function () {
+console.log("window onload");    
+}

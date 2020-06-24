@@ -70,7 +70,7 @@
         <!-- Fin del Side navbar -->
 
         <!-- Cuerpo a escribir y comienza dominio de vue -->
-        <div class="page-holder w-100 d-flex flex-wrap">
+        <div id="domVue" class="page-holder w-100 d-flex flex-wrap">
             <div class="container-fluid px-xl-5">
 
                 <div style="margin-top: 2rem;">
@@ -100,36 +100,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th>1</th>
-                                        <td>Jaime</td>
-                                        <td>12/06/2020</td>
-                                        <td>$45.60</td>
-                                        <td>NA</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                data-target="#eliminarProducto"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>2</th>
-                                        <td>Espadero</td>
-                                        <td>26/05/2020</td>
-                                        <td>$251.56</td>
-                                        <td>NA</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                data-target="#eliminarProducto"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>3</th>
-                                        <td>Cristian</td>
-                                        <td>23/06/2020</td>
-                                        <td>$437.12</td>
-                                        <td>NA</td>
+                                    <tr v-for="(ord,index) in ordenes" v-show="filtro(index)">
+                                        <th>{{ord.idOrden}}</th>
+                                        <td>{{ord.nombreCliente}}</td>
+                                        <td>{{ord.fechaOrd}}</td>
+                                        <td>{{ord.totalOrden}}</td>
+                                        <td>{{ord.observacionesOrden}}</td>
                                         <td>
                                             <button type="button" class="btn btn-danger" data-toggle="modal"
                                                 data-target="#eliminarProducto"><i class="fa fa-trash"
@@ -313,6 +289,9 @@
     <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="js/front.js"></script>
+    <script src="js/vue.js "></script>
+    <script src="js/axios.min.js "></script>
+    <script src="js/orden.js"></script>
 </body>
 
 </html>
