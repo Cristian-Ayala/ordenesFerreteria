@@ -23,6 +23,24 @@
     <link rel="stylesheet" href="css/custom.css">
     <!-- Favicon-->
     <link rel="shortcut icon" href="img/fav.png">
+    <style>
+        .inp-cantidad {
+            width: 3em;
+            margin: 0;
+            border: none;
+            text-align: center;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
 </head>
 
 <body>
@@ -100,7 +118,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(ord,index) in ordenes" v-show="filtro(index)">
+                                    <tr v-for="(ord,index) in ordenes" v-show="filtro(index)"
+                                        v-on:click="ordSelected=ord" v-on:dblClick='doubleClick'
+                                        style="cursor: pointer;">
                                         <th>{{ord.idOrden}}</th>
                                         <td>{{ord.nombreCliente}}</td>
                                         <td>{{ord.fechaOrd}}</td>
@@ -117,7 +137,8 @@
                         </div>
                     </div>
                 </div>
-
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#detalleProducto" hidden
+                    id="btnDetOrden"><i class="fa fa-trash" aria-hidden="true"></i></button>
             </div>
             <!-- Fin del Cuerpo a escribir -->
 
@@ -138,11 +159,11 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="orden.nombreCliente">
                                     </div>
                                 </div>
                                 <div class="line"></div>
-                                <div style="overflow-x: scroll;">
+                                <div>
                                     <div class="form-group position-relative mb-0">
                                         <button type="submit" style="top: -3px; left: 0;"
                                             class="position-absolute bg-white border-0 p-0"><i
@@ -150,102 +171,94 @@
                                         <input type="search" placeholder="Buscar producto..."
                                             class="form-control form-control-sm border-0 no-shadow pl-4">
                                     </div>
-                                    <table class="table card-text table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>UPC</th>
-                                                <th>Nombre</th>
-                                                <th>Marca</th>
-                                                <th>Categoria</th>
-                                                <th>Precio</th>
-
-                                                <th>Stock</th>
-                                                <th>Cantidad</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th>3478260116332</th>
-                                                <td>Pasta dental</td>
-                                                <td>Colgate</td>
-                                                <td>Hogar</td>
-                                                <td>$1.00</td>
-
-                                                <td>6123</td>
-                                                <td style="padding: 0;">
-                                                    <div class="input-group" style="transform: scale(0.9);">
-                                                        <div class="input-group-prepend"><span
-                                                                class="input-group-text">-</span></div>
-                                                        <input type="text" style="padding: 0" class="form-control">
-                                                        <div class="input-group-append"><span
-                                                                class="input-group-text">+</span></div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>8375502253172</th>
-                                                <td>Engrapadora</td>
-                                                <td>StudMark</td>
-                                                <td>Hogar</td>
-                                                <td>$3.00</td>
-
-                                                <td>238</td>
-                                                <td style="padding: 0;">
-                                                    <div class="input-group" style="transform: scale(0.9);">
-                                                        <div class="input-group-prepend"><span
-                                                                class="input-group-text">-</span></div>
-                                                        <input type="text" style="padding: 0" class="form-control">
-                                                        <div class="input-group-append"><span
-                                                                class="input-group-text">+</span></div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>9248576100438</th>
-                                                <td>Lentes</td>
-                                                <td>Ray Ban</td>
-                                                <td>Belleza</td>
-                                                <td>$32.00</td>
-
-                                                <td>421</td>
-                                                <td style="padding: 0;">
-                                                    <div class="input-group" style="transform: scale(0.9);">
-                                                        <div class="input-group-prepend"><span
-                                                                class="input-group-text">-</span></div>
-                                                        <input type="text" style="padding: 0" class="form-control">
-                                                        <div class="input-group-append"><span
-                                                                class="input-group-text">+</span></div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div style="overflow-y: scroll;max-height: 500px;">
+                                        <table class="table card-text table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>UPC</th>
+                                                    <th>Nombre</th>
+                                                    <th>Marca</th>
+                                                    <th>Categoria</th>
+                                                    <th>Precio</th>
+                                                    <th>Stock</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Descuento</th>
+                                                    <th>Sub-Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(prod,index) in productos">
+                                                    <th>{{prod.upc}}</th>
+                                                    <td>{{prod.nombreProd}}</td>
+                                                    <td>{{converterIdMar2MarName(prod.idMarca)}}</td>
+                                                    <td>{{converterIdCat2CatName(prod.idCategoria)}}</td>
+                                                    <td>{{prod.precioUnit}}</td>
+                                                    <td>{{prod.stockProd}}</td>
+                                                    <td style="padding: 0;">
+                                                        <div class="input-group" style="transform: scale(0.9);">
+                                                            <div class="input-group-prepend"
+                                                                style="cursor: pointer;user-select: none;"><span
+                                                                    class="input-group-text"
+                                                                    @click="decProducto(prod)">-</span></div>
+                                                            <input type="text"
+                                                                style="padding: 0;max-width: 3rem; text-align: center;"
+                                                                :min="0" :max="prod.stockProd"
+                                                                v-model.lazy.number="prod.cantidad" step="1"
+                                                                @input="change(prod,$event)"
+                                                                @change="change(prod,$event)" class="form-control">
+                                                            <div class="input-group-append"
+                                                                style="cursor: pointer;user-select: none;"><span
+                                                                    class="input-group-text"
+                                                                    @click="incProducto(prod)">+</span></div>
+                                                        </div>
+                                                    </td>
+                                                    <td><input type="text"
+                                                            style="padding: 0;max-width: 3rem; text-align: center;"
+                                                            min="0" max="100"
+                                                            v-model.lazy.number="prod.descuento" step="1"
+                                                            class="form-control">
+                                                    </td>
+                                                    <td>
+                                                        {{((prod.precioUnit*prod.cantidad)-(prod.precioUnit*prod.cantidad*(prod.descuento/100))).toFixed(2)}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <h6 style="margin-top: 1rem;font-weight: 900;text-align: center;">Total:
+                                        {{orden.totalOrden.toFixed(2)}}</h6>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Descripción</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1"
-                                            rows="3"></textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            v-model="orden.observacionesOrden"></textarea>
                                     </div>
                                 </div>
                                 <div class="line"></div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label">Descuento (%)</label>
+                                    <label class="col-md-3 form-control-label">Método de pago</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control">
+                                        <input list="metPago" class="form-control" v-model="metPagoSelected">
+                                        <datalist id="metPago">
+                                            <option v-for="(met,index) in metPago" :id="index"
+                                                :data-value="met.idMetodoPago">
+                                                {{converterIdMetPago2MetName(met.idMetodoPago)}}
+                                            </option>
+                                        </datalist>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-primary" @Click="createRegistro" data-dismiss="modal">Guardar</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Fin del Modal agregar producto -->
+            <!-- Fin del Modal agregar orden -->
 
             <!-- Inicio del Modal eliminar orden -->
             <div class="modal fade" id="eliminarProducto" tabindex="-1" role="dialog" aria-labelledby="agregarProducto"
@@ -269,7 +282,87 @@
                     </div>
                 </div>
             </div>
-            <!-- Fin del Modal eliminar producto -->
+            <!-- Fin del Modal eliminar orden -->
+
+            <!-- Inicio del Modal detalle orden -->
+            <div class="modal fade bd-example-modal-lg" id="detalleProducto" tabindex="-1" role="dialog"
+                aria-labelledby="detalleProducto" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Detalle Orden</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label">Nombre</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" readonly
+                                            v-model="ordSelected.nombreCliente">
+                                    </div>
+                                </div>
+                                <div class="line"></div>
+                                <div style="overflow-y: scroll;max-height: 500px;">
+                                    <table class="table card-text table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>UPC</th>
+                                                <th>Nombre</th>
+                                                <th>Marca</th>
+                                                <th>Categoria</th>
+                                                <th>Precio</th>
+                                                <th>Cantidad</th>
+                                                <th>Descuento</th>
+                                                <th>Sub-Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(prod,index) in ordSelected.productos" style="cursor: pointer;">
+                                                <th>{{prod.upc}}</th>
+                                                <td>{{prod.nombreProd}}</td>
+                                                <td>{{converterIdMar2MarName(prod.idMarca)}}</td>
+                                                <td>{{converterIdCat2CatName(prod.idCategoria)}}</td>
+                                                <td>{{prod.precioUnit}}</td>
+                                                <td>{{prod.cantidadProd}}</td>
+                                                <td>{{prod.descuento}}</td>
+                                                <td>{{((prod.cantidadProd*prod.precioUnit) - (prod.cantidadProd*prod.precioUnit*(prod.descuento/100))).toFixed(2)}}
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <h6 style="margin-top: 1rem;font-weight: 900;text-align: center;">Total:
+                                    {{ordSelected.totalOrden}}</h6>
+                                <div class="line"></div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label">Descripción</label>
+                                    <div class="col-md-9">
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            readonly v-model="ordSelected.observacionesOrden"></textarea>
+                                    </div>
+                                </div>
+                                <div class="line"></div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label">Método Pago</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" readonly
+                                            v-model="ordSelected.nombrePago">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin del Modal detalle orden -->
 
             <footer class="footer-margin footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
                 <div class="container-fluid">
