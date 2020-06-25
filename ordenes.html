@@ -104,7 +104,8 @@
                                     class="position-absolute bg-white border-0 p-0"><i
                                         class="o-search-magnify-1 text-gray text-lg"></i></button>
                                 <input type="search" placeholder="Buscar orden..."
-                                    class="form-control form-control-sm border-0 no-shadow pl-4">
+                                    class="form-control form-control-sm border-0 no-shadow pl-4"
+                                    v-model="searchDisplay">
                             </div>
                             <table class="table card-text table-hover">
                                 <thead>
@@ -120,16 +121,16 @@
                                 <tbody>
                                     <tr v-for="(ord,index) in ordenes" v-show="filtro(index)"
                                         v-on:click="ordSelected=ord" v-on:dblClick='doubleClick'
-                                        style="cursor: pointer;">
-                                        <th>{{ord.idOrden}}</th>
+                                        style="cursor: pointer;user-select: none;">
+                                        <th>{{primerosDigitos(ord.idOrden)}}</th>
                                         <td>{{ord.nombreCliente}}</td>
                                         <td>{{ord.fechaOrd}}</td>
                                         <td>{{ord.totalOrden}}</td>
                                         <td>{{ord.observacionesOrden}}</td>
                                         <td>
                                             <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                data-target="#eliminarProducto"><i class="fa fa-trash"
-                                                    aria-hidden="true"></i></button>
+                                                data-target="#eliminarProducto" v-on:click="ordSelected=ord"><i
+                                                    class="fa fa-trash" aria-hidden="true"></i></button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -169,7 +170,8 @@
                                             class="position-absolute bg-white border-0 p-0"><i
                                                 class="o-search-magnify-1 text-gray text-lg"></i></button>
                                         <input type="search" placeholder="Buscar producto..."
-                                            class="form-control form-control-sm border-0 no-shadow pl-4">
+                                            class="form-control form-control-sm border-0 no-shadow pl-4"
+                                            v-model="prodSearch">
                                     </div>
                                     <div style="overflow-y: scroll;max-height: 500px;">
                                         <table class="table card-text table-hover">
@@ -187,12 +189,12 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(prod,index) in productos">
+                                                <tr v-for="(prod,index) in productos" v-show="filtroProd(index)">
                                                     <th>{{prod.upc}}</th>
                                                     <td>{{prod.nombreProd}}</td>
                                                     <td>{{converterIdMar2MarName(prod.idMarca)}}</td>
                                                     <td>{{converterIdCat2CatName(prod.idCategoria)}}</td>
-                                                    <td>{{prod.precioUnit}}</td>
+                                                    <td>{{dosDecimalesProd(prod.precioUnit)}}</td>
                                                     <td>{{prod.stockProd}}</td>
                                                     <td style="padding: 0;">
                                                         <div class="input-group" style="transform: scale(0.9);">
@@ -214,9 +216,8 @@
                                                     </td>
                                                     <td><input type="text"
                                                             style="padding: 0;max-width: 3rem; text-align: center;"
-                                                            min="0" max="100"
-                                                            v-model.lazy.number="prod.descuento" step="1"
-                                                            class="form-control">
+                                                            min="0" max="100" v-model.lazy.number="prod.descuento"
+                                                            step="1" class="form-control">
                                                     </td>
                                                     <td>
                                                         {{((prod.precioUnit*prod.cantidad)-(prod.precioUnit*prod.cantidad*(prod.descuento/100))).toFixed(2)}}
@@ -253,7 +254,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" @Click="createRegistro" data-dismiss="modal">Guardar</button>
+                            <button type="button" class="btn btn-primary" @Click="createRegistro"
+                                data-dismiss="modal">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -273,11 +275,11 @@
                         </div>
                         <div class="modal-body">
                             <h6 style="font-weight: 400;text-align: center;">¿Está seguro que quiere eliminar la orden
-                                "$vue.object"?</h6>
+                                "{{ordSelected.idOrden}}"?</h6>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger">Eliminar</button>
+                            <button type="button" class="btn btn-danger" @Click="removeRegistro()">Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -297,6 +299,13 @@
                         </div>
                         <div class="modal-body">
                             <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label">ID Orden</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" readonly v-model="ordSelected.idOrden">
+                                    </div>
+                                </div>
+                                <div class="line"></div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Nombre</label>
                                     <div class="col-md-9">

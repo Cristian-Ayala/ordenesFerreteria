@@ -17,35 +17,14 @@ var vm = new Vue({
         metPago: [],
         metPagoSelected: "",
         detalleOrden: [],
+        activaOrd: [],
+        prodSearch: "",
         // Esto va a servir para construir objetos ordenes
         productosObject: [],
         i: 0,
         j: 0,
     },
     methods: {
-
-        /*
-        Modifica el registro seleccionado
-        */
-        edithRegistro() {
-            this.producto.idMarca = this.marcas.filter(mar => mar.nombreMarca === this.producto.nombreMarca)[0].idMarca;
-            this.producto.idCategoria = this.categorias.filter(cat => cat.nombreCat === this.producto.nombreCategoria)[0].idCategoria;
-            if (this.producto.upc.trim() !== "" && this.producto.stockProd > 0 && this.producto.nombreProd.trim() !== "" && this.producto.idMarca > 0 && this.producto.idCategoria > 0) {
-                console.log(this.producto);
-                axios.put(this.urlApi, JSON.stringify(this.producto), {
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(response => {
-                    console.log(response.status);
-                    this.getAll();
-                }).catch(ex => {
-                    console.log(ex)
-                });
-            } else {
-                console.log("No se pudo editar el producto porque uno de los valores es nulo, indefinido o está vacio");
-            }
-        },
         /*
         creacion de nuevos registros
         (no se pueden crear registros vacios)
@@ -57,11 +36,12 @@ var vm = new Vue({
                     "precioUnit": obj.precioUnit,
                     "upc": obj.upc,
                     "cantidadProd": obj.cantidad,
-                    "descuento": obj.descuento
+                    "descuento": obj.descuento,
+                    "stockProd": obj.stockProd
                 };
                 return objet;
             });
-            this.detalleOrden = this.detalleOrden.filter(obj => obj.cantidadProd>0);
+            this.detalleOrden = this.detalleOrden.filter(obj => obj.cantidadProd > 0);
             //Creando objeto para orden
             this.orden.idMetodoPago = this.metPago.filter(metPag => metPag.nombrePago === this.metPagoSelected)[0].idMetodoPago;
             if (this.orden.nombreCliente.trim() !== "" && this.orden.totalOrden > 0 && this.orden.idMetodoPago >= 0) {
@@ -75,11 +55,11 @@ var vm = new Vue({
                     console.log("Estos son los productos", this.detalleOrden)
                     //sólo productos seleccionados
                     this.detalleOrden.map(prod => {
-                        console.log("Cantidad", prod.cantidadProd) 
+                        console.log("Cantidad", prod.cantidadProd)
                         if (prod.cantidadProd > 0) {
                             prod.idOrden = ordenId;
                             console.log("Producto con idOrden", prod)
-                            console.log("Esto envié: ",JSON.stringify(prod)); 
+                            console.log("Esto envié: ", JSON.stringify(prod));
                             axios.post(ApiRestUrl + "detalleOrden", JSON.stringify(prod), {
                                 headers: {
                                     'content-type': 'application/json'
@@ -87,11 +67,25 @@ var vm = new Vue({
                             }).then(response => {
                                 console.log("se supone que ya estoy .-.")
                                 //reiniciar todo
-                                this.getAll();
-                                this.getProductos();
-                                this.clearData();
+                                // this.getAll();
+                                // this.getProductos();
+                                // this.clearData();
+                                let stockNew = {stockProd: prod.stockProd - prod.cantidadProd};
+                                //Modifcar el stock de cada producto
+                                axios.put(ApiRestUrl + "producto/stock/" + prod.upc, JSON.stringify(stockNew), {
+                                    headers: {
+                                        'content-type': 'application/json'
+                                    }
+                                }).then(
+                                    response => {
+                                        this.metPago = response.data;
+                                        location.reload();
+                                    }
+                                ).catch(ex => {
+                                    console.log(ex)
+                                });
                             }).catch(ex => {
-                                
+
                                 console.log(ex);
 
                             })
@@ -111,9 +105,10 @@ var vm = new Vue({
         eliman registros, correspondiente al id seleccionado
          */
         removeRegistro: function () {
-            axios.put(this.urlApi + "/remove/" + this.producto.upc).then(
+            axios.put(this.urlApi + "/remove/" + this.ordSelected.idOrden).then(
                 response => {
-                    this.getAll();
+                    localStorage.setItem("orden-eliminada", this.ordSelected.idOrden);
+                    location.reload();
                     console.log(response.status)
                 }
             ).catch(ex => {
@@ -154,30 +149,35 @@ var vm = new Vue({
                 response => {
                     this.ordenes = response.data
                     this.ordenes.map(detOrd => {
-                        try {
-                            if (typeof this.ordenes[this.i].idOrden != 'undefined') {
-                                if (this.ordenes[this.i].idOrden !== detOrd.orden.idOrden) {
-                                    this.i++;
-                                    this.j = 0;
-                                    this.productosObject = [];
-                                }
+                        this.activaOrd.map(ordenActiva => {
+                            if (ordenActiva === detOrd.orden.idOrden) {
+                                try {
+                                    if (typeof this.ordenes[this.i].idOrden != 'undefined') {
+                                        if (this.ordenes[this.i].idOrden !== detOrd.orden.idOrden) {
+                                            this.i++;
+                                            this.j = 0;
+                                            this.productosObject = [];
+                                        }
+                                    }
+                                } catch (err) {}
+                                this.ordenes[this.i] = detOrd.orden;
+                                this.productosObject.push(detOrd.producto);
+                                this.ordenes[this.i].productos = this.productosObject;
+                                this.ordenes[this.i].productos[this.j].descuento = detOrd.descuento;
+                                this.ordenes[this.i].productos[this.j].cantidadProd = detOrd.cantidadProd;
+                                this.ordenes[this.i].productos[this.j].precioUnit = detOrd.precioUnit;
+                                this.ordenes[this.i].nombrePago = this.ordenes[this.i].idMetodoPago.nombrePago;
+                                try {
+                                    //para quitar [UTC] al final de la fecha
+                                    let myDate = new Date(this.ordenes[this.i].fechaOrd.slice(0, this.ordenes[this.i].fechaOrd.length - 5));
+                                    this.ordenes[this.i].fechaOrd = this.formatDate(myDate);
+                                    this.ordenes[this.i].totalOrden = this.ordenes[this.i].totalOrden.toFixed(2);
+                                } catch (error) {}
+                                this.j++;
                             }
-                        } catch (err) {}
-                        this.ordenes[this.i] = detOrd.orden;
-                        this.productosObject.push(detOrd.producto);
-                        this.ordenes[this.i].productos = this.productosObject;
-                        this.ordenes[this.i].productos[this.j].descuento = detOrd.descuento;
-                        this.ordenes[this.i].productos[this.j].cantidadProd = detOrd.cantidadProd;
-                        this.ordenes[this.i].productos[this.j].precioUnit = detOrd.precioUnit;
-                        this.ordenes[this.i].nombrePago = this.ordenes[this.i].idMetodoPago.nombrePago;
-                        try {
-                            //para quitar [UTC] al final de la fecha
-                            let myDate = new Date(this.ordenes[this.i].fechaOrd.slice(0, this.ordenes[this.i].fechaOrd.length - 5));
-                            this.ordenes[this.i].fechaOrd = this.formatDate(myDate);
-                            this.ordenes[this.i].totalOrden = this.ordenes[this.i].totalOrden.toFixed(2);
-                        } catch (error) {}
-                        this.j++;
+                        });
                     });
+
                 }
             ).catch(ex => {
                 console.log(ex)
@@ -224,8 +224,13 @@ var vm = new Vue({
         },
         filtro(valor) {
             if (this.searchDisplay === "") return true;
-            let array = (this.marcas.filter(mar => mar.idMarca === this.productos[valor].idMarca)[0].nombreMarca + this.categorias.filter(cat => cat.idCategoria === this.productos[valor].idCategoria)[0].nombreCat + this.productos[valor].nombreProd + this.productos[valor].descripcion + this.productos[valor].precioUnit + this.productos[valor].stockProd + this.productos[valor].upc).toUpperCase();
+            let array = (this.ordenes[valor].idOrden + this.ordenes[valor].observacionesOrden + this.ordenes[valor].totalOrden + this.ordenes[valor].nombreCliente).toUpperCase();
             return array.indexOf(this.searchDisplay.toUpperCase()) >= 0;
+        },
+        filtroProd(valor) {
+            if (this.prodSearch === "") return true;
+            let array = (this.marcas.filter(mar => mar.idMarca === this.productos[valor].idMarca)[0].nombreMarca + this.categorias.filter(cat => cat.idCategoria === this.productos[valor].idCategoria)[0].nombreCat + this.productos[valor].nombreProd + this.productos[valor].descripcion + this.productos[valor].precioUnit + this.productos[valor].stockProd + this.productos[valor].upc).toUpperCase();
+            return array.indexOf(this.prodSearch.toUpperCase()) >= 0;
         },
         showEditing: function (input) {
             // Get the value from the input
@@ -291,13 +296,35 @@ var vm = new Vue({
             this.productos.forEach(prod => {
                 this.orden.totalOrden += ((prod.precioUnit * prod.cantidad) - (prod.precioUnit * prod.cantidad * (prod.descuento / 100)));
             });
+        },
+        primerosDigitos(idOrden) {
+            try {
+                return idOrden.substring(0, 5);
+            } catch (error) {
+                return idOrden;
+            }
+        },
+        dosDecimalesProd(precio) {
+            try {
+                return precio.toFixed(2);
+            } catch (error) {
+                return precio;
+            }
         }
     },
     /*
     hook para inicializar los valores de la tabla
      */
     mounted() {
-        this.getAll();
+        //Obtiene id De las ordenes activas
+        axios.get(ApiRestUrl + "orden/soloActivos").then(
+            response => {
+                this.activaOrd = response.data;
+                this.getAll();
+            }
+        ).catch(ex => {
+            console.log(ex)
+        });
         // Obtener las categorias
         axios.get(ApiRestUrl + "categoria").then(
             response => {
@@ -322,8 +349,7 @@ var vm = new Vue({
             }
         ).catch(ex => {
             console.log(ex)
-        })
-
+        });
     },
     watch: {
         //actualiza el array de productos detalle orden
