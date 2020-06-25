@@ -70,7 +70,9 @@ var vm = new Vue({
                                 // this.getAll();
                                 // this.getProductos();
                                 // this.clearData();
-                                let stockNew = {stockProd: prod.stockProd - prod.cantidadProd};
+                                let stockNew = {
+                                    stockProd: prod.stockProd - prod.cantidadProd
+                                };
                                 //Modifcar el stock de cada producto
                                 axios.put(ApiRestUrl + "producto/stock/" + prod.upc, JSON.stringify(stockNew), {
                                     headers: {
@@ -120,7 +122,7 @@ var vm = new Vue({
         getProductos: function () {
             axios.get(ApiRestUrl + "producto").then(
                 response => {
-                    this.productos = response.data.map(obj => {
+                    this.productos = response.data.map((obj, index) => {
                         let object = {
                             "activoProd": obj.activoProd,
                             "descripcion": obj.descripcion,
@@ -134,6 +136,13 @@ var vm = new Vue({
                             "descuento": 0
                         };
                         return object;
+                    });
+                    //Filtrar productos activos solamentes
+                    this.productos = this.productos.filter(prod => {
+                         if (prod.activoProd) {
+                            return prod;
+
+                         }
                     });
                 }
             ).catch(ex => {
